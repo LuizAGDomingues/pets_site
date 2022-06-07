@@ -1,9 +1,22 @@
 import type { NextPage } from 'next'
 import Lista from '../ui/components/Lista/Lista'
 import Titulo from '../ui/components/Titulo/Titulo'
-
+import { Dialog, TextField, Grid, DialogActions, Button, Snackbar } from '@mui/material'
+import { useIndex } from '../data/hooks/pages/useIndex'
 
 const Home: NextPage = () => {
+  const {
+    listaPets,
+    petSelecionado,
+    setPetSelecionado,
+    email,
+    setEmail,
+    valor,
+    setValor,
+    mensagem,
+    setMensagem,
+    adotar
+  } = useIndex();
   return (
     <div>
       <Titulo titulo='' 
@@ -15,33 +28,24 @@ const Home: NextPage = () => {
         }
       />
       <Lista 
-        pets={[
-          {
-            id: 1,
-            name: 'Bidu',
-            history: 'abcdefegegegegegegegeg',
-            foto: 'https://super.abril.com.br/wp-content/uploads/2018/05/filhotes-de-cachorro-alcanc3a7am-o-c3a1pice-de-fofura-com-8-semanas1.png'
-          },
-          {
-            id: 2,
-            name: 'Scooby',
-            history: 'abcdefegegegegegegegeg',
-            foto: 'https://conteudo.imguol.com.br/c/entretenimento/54/2020/04/28/cachorro-pug-1588098472110_v2_1x1.jpg'
-          },
-          {
-            id: 3,
-            name: 'Reinaldo',
-            history: 'abcdefegegegegegegegeg',
-            foto: 'https://static1.patasdacasa.com.br/articles/8/10/38/@/4864-o-cachorro-inteligente-mostra-essa-carac-articles_media_mobile-1.jpg'
-          },
-          {
-            id:4,
-            name: 'Jamile',
-            history: 'abcdefegegegegegegegeg',
-            foto: 'https://conteudo.imguol.com.br/c/entretenimento/eb/2022/03/23/cachorro-da-raca-lulu-da-pomeramia-1648065976007_v2_3x4.jpg'
-          },
-        ]}
+        pets={listaPets}
+        onSelect={(pet) => setPetSelecionado(pet)}
       />
+      <Dialog open={petSelecionado !== null} fullWidth PaperProps={{sx: {p: 5}}} onClose={() => setPetSelecionado(null)}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextField label='E-mail' fullWidth type={'email'} value={email} onChange={(e) => setEmail(e.target.value)}/>
+          </Grid>
+          <Grid item xs={12}>
+            <TextField label='Quantia por mês' fullWidth type={'number'} value={valor} onChange={(e) => setValor(e.target.value)}/>
+          </Grid>
+        </Grid>
+        <DialogActions sx={{mt:5}}>
+          <Button color={'secondary'} onClick={() => setPetSelecionado(null)}>Cancelar</Button>
+          <Button variant={'contained'} onClick={() => adotar()}>Confirmar Adoção</Button>
+        </DialogActions>
+      </Dialog>
+      <Snackbar open={mensagem.length > 0} message={mensagem} autoHideDuration={2500} onClose={() => setMensagem('')}/>
     </div>
   )
 }
